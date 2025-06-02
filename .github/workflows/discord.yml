@@ -3,11 +3,11 @@ name: Discord notifier
 on:
   push:
     branches:
-      - main          # change to '**' for all branches
-  pull_request:        # optional: notify on PR open/close/merge
+      - main                # use "*" for all branches
+  pull_request:             # optional PR notifications
     types:
       - opened
-      - closed
+      - closed              # 'closed' includes merged PRs
 
 jobs:
   notify:
@@ -24,4 +24,5 @@ jobs:
             `${{ github.ref_name }}` received **${{ github.event.commits | size }}`` commit(s)
             — ${{ github.event.head_commit.message }}
             <${{ github.event.compare }}>
+
 
