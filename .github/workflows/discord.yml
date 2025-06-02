@@ -3,26 +3,22 @@ name: Discord notifier
 on:
   push:
     branches:
-      - main                # use "*" for all branches
-  pull_request:             # optional PR notifications
-    types:
-      - opened
-      - closed              # 'closed' includes merged PRs
+      - main
+  pull_request:
+    types: [opened, closed]
 
 jobs:
   notify:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send commit info to Discord
+      - name: Send message to Discord
         uses: Ilshidur/action-discord@v2
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            **${{ github.repository }}**
-            `${{ github.ref_name }}` received **${{ github.event.commits | size }}`` commit(s)
-            — ${{ github.event.head_commit.message }}
+            ✅ New push to `${{ github.ref_name }}`
+            Latest commit: ${{ github.event.head_commit.message }}
             <${{ github.event.compare }}>
-
 
