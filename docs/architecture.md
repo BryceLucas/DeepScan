@@ -2,12 +2,12 @@
 *(DeepSeek-only, Milestone 1 and beyond)*  
 
 ## 1  Purpose  
-DeepScan is a web application that lets job-seekers upload a résumé, chat with an AI about improvements, and receive an ATS-friendly rewrite plus rationale.  
+DeepScan is a web application that lets job-seekers upload a resume, chat with an AI about improvements, and receive an ATS-friendly rewrite plus rationale.  
 The stack is deliberately simple:
 
 * **Front-end** – static Single-Page App (React + Vite).  
 * **Back-end** – minimal Node 18 / Express API that proxies requests to **DeepSeek**.  
-* **LLM provider** – DeepSeek’s `deepseek-chat` (for general rewriting) or `deepseek-reasoner` (for step-by-step rationales).  No OpenAI dependency.
+* **LLM provider** – DeepSeek’s `deepseek-chat` (for general rewriting) or `deepseek-reasoner` (for step-by-step rationales).  No OpenAI dependency as cost are to high. 
 
 ---
 
