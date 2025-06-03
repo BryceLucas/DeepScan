@@ -20,6 +20,7 @@ jobs:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           message: |
-            ✅ New push to `${{ github.ref_name }}`
-            Latest commit: ${{ github.event.head_commit.message }}
-            View diff: <${{ github.event.compare }}>
+            🗣 "You told me you were the best. Now show me!" – Sgt. DeepScan
+            ${{ github.actor }} just pushed to `${{ github.ref_name }}`
+            📦 Commit: ${{ github.event.head_commit.message }}
+            🔗 View diff: <${{ github.event.compare }}>
