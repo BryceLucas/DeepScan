@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepScan</title>
+    <style>
+      /* Basic centering + styling */
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        background: #f3f4f6;
+        color: #111827;
+      }
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      label {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 600;
+      }
+      textarea,
+      input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        font-size: 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      pre {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #e5e7eb;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>DeepScan – Coming Soon</h1>
+
+      <!-- Résumé input -->
+      <label for="resumeInput">Paste Your Resume Here:</label>
+      <textarea
+        id="resumeInput"
+        rows="8"
+        placeholder="Name, Experience, Skills…"
+      ></textarea>
+
+      <!-- Field-of-work input -->
+      <label for="fieldInput">Field of Work (optional):</label>
+      <input
+        id="fieldInput"
+        type="text"
+        placeholder="e.g. Software Engineering"
+      />
+
+      <!-- Trigger button -->
+      <button id="rewriteBtn">Rewrite Résumé</button>
+
+      <!-- Area to display server response -->
+      <pre id="outputArea">The rewrite will appear here…</pre>
+    </div>
+
+    <script>
+      // We grab references to our DOM elements
+      const resumeEl = document.getElementById("resumeInput");
+      const fieldEl = document.getElementById("fieldInput");
+      const buttonEl = document.getElementById("rewriteBtn");
+      const outputEl = document.getElementById("outputArea");
+
+      buttonEl.addEventListener("click", async () => {
+        const resumeText = resumeEl.value.trim();
+        const fieldText = fieldEl.value.trim();
+
+        if (!resumeText) {
+          alert("Please paste your resume text first.");
+          return;
+        }
+
+        // Show a loading placeholder
+        outputEl.textContent = "Processing… please wait.";
+
+        try {
+          // Send a POST to /api/chat with JSON body
+          const resp = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              resumeText: resumeText,
+              field: fieldText || "General",
+            }),
+          });
+
+          // We expect a JSON response for now (placeholder)
+          // Once we connect DeepSeek streaming, we can switch to SSE logic.
+          if (!resp.ok) {
+            const err = await resp.json();
+            outputEl.textContent = "Error: " + (err.error || resp.statusText);
+            return;
+          }
+
+          const data = await resp.json();
+          // If chat.js returns { message: "..." }, display that
+          if (data.message) {
+            outputEl.textContent = data.message;
+          } else {
+            // For future streaming responses, we’ll handle differently.
+            outputEl.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          outputEl.textContent = "Fetch error: " + error.message;
+        }
+      });
+    </script>
+  </body>
+</html>

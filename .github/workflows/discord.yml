@@ -4,23 +4,44 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     types:
       - opened
       - closed
+  workflow_dispatch:
+  release:
+    types:
+      - published
 
 jobs:
   notify:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Pick a random Johnson quip
+        id: pick_quote
+        run: |
+          quotes=(
+            "You told me you were the best. Now show me!"
+            "I know what the ladies like."
+            "You are the finest squad I’ve ever served with. And I’m not just saying that because I’m drunk."
+            "Send me out… with a bang."
+          )
+          # Compute array length
+          len=${#quotes[@]}
+          # RANDOM % len gives an index from 0 to len-1
+          idx=$((RANDOM % len))
+          # Write the chosen quote into the generated output variable "Q"
+          echo "Q=${quotes[$idx]}" >> $GITHUB_OUTPUT
+
       - name: Send message to Discord
         uses: appleboy/discord-action@v1.0.0
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           message: |
-            🗣 "You told me you were the best. Now show me!" – Sgt. DeepScan
+            🗣 "${{ steps.pick_quote.outputs.Q }}" – Sergeant DeepScan
             ${{ github.actor }} just pushed to `${{ github.ref_name }}`
             📦 Commit: ${{ github.event.head_commit.message }}
             🔗 View diff: <${{ github.event.compare }}>
