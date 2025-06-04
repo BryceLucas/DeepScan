@@ -1,144 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DeepScan</title>
-    <style>
-      /* Basic centering + styling */
-      body {
-        margin: 0;
-        font-family: "Segoe UI", Roboto, sans-serif;
-        background: #f3f4f6;
-        color: #111827;
-      }
-      .container {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-      }
-      label {
-        display: block;
-        margin-top: 1rem;
-        font-weight: 600;
-      }
-      textarea,
-      input[type="text"] {
-        width: 100%;
-        padding: 0.5rem;
-        margin-top: 0.25rem;
-        font-size: 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-      button {
-        margin-top: 1rem;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #1d4ed8;
-      }
-      pre {
-        margin-top: 1.5rem;
-        padding: 1rem;
-        background: #e5e7eb;
-        border-radius: 4px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        max-height: 400px;
-        overflow-y: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>DeepScan – Coming Soon</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepScan</title>
+  <style>
+    /* Basic centering + styling */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    textarea,
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      font-size: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    pre {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #e5e7eb;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DeepScan – Coming Soon</h1>
+    
+    <!-- FILE UPLOAD -->
+    <label for="fileInput">Or Upload Your Resume (PDF or DOCX):</label>
+    <input id="fileInput" type="file" accept=".pdf,.docx" />
+    <button id="uploadBtn">Upload and Extract Text</button>
 
-      <!-- Résumé input -->
-      <label for="resumeInput">Paste Your Resume Here:</label>
-      <textarea
-        id="resumeInput"
-        rows="8"
-        placeholder="Name, Experience, Skills…"
-      ></textarea>
+    <!-- Resume input (either paste or after extraction) -->
+    <label for="resumeInput">Paste Your Resume Text Here:</label>
+    <textarea id="resumeInput" rows="8" placeholder="Name, Experience, Skills…"></textarea>
+    
+    <!-- Field-of-work input -->
+    <label for="fieldInput">Field of Work (optional):</label>
+    <input id="fieldInput" type="text" placeholder="e.g. Software Engineering" />
+    
+    <!-- Trigger rewrite -->
+    <button id="rewriteBtn">Rewrite Resume</button>
+    
+    <!-- Area to display server response -->
+    <pre id="outputArea">The rewrite will appear here…</pre>
+  </div>
 
-      <!-- Field-of-work input -->
-      <label for="fieldInput">Field of Work (optional):</label>
-      <input
-        id="fieldInput"
-        type="text"
-        placeholder="e.g. Software Engineering"
-      />
+  <script>
+    // DOM references
+    const fileEl = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const resumeEl = document.getElementById("resumeInput");
+    const fieldEl = document.getElementById("fieldInput");
+    const rewriteBtn = document.getElementById("rewriteBtn");
+    const outputEl = document.getElementById("outputArea");
 
-      <!-- Trigger button -->
-      <button id="rewriteBtn">Rewrite Resume</button>
+    // A more robust check for “resume-like” text
+    function looksLikeResumeText(str) {
+      let printableCount = 0;
+      for (let ch of str) {
+        if (/[\w\d ,.'"()\-:;!?]/.test(ch)) {
+          printableCount++;
+        }
+      }
+      // Must have at least 300 printable chars
+      if (printableCount < 300) {
+        return false;
+      }
+      // Must include at least one common resume word
+      const lower = str.toLowerCase();
+      const keywords = ["experience", "education", "skills", "objective", "work"];
+      for (const word of keywords) {
+        if (lower.includes(word)) {
+          return true;
+        }
+      }
+      // If no keywords found, fail the check
+      return false;
+    }
 
-      <!-- Area to display server response -->
-      <pre id="outputArea">The rewrite will appear here…</pre>
-    </div>
+    // 1) Handle “Upload and Extract Text” click
+    uploadBtn.addEventListener("click", async () => {
+      const files = fileEl.files;
+      if (!files || files.length === 0) {
+        alert("Please choose a PDF or DOCX file first.");
+        return;
+      }
 
-    <script>
-      // We grab references to our DOM elements
-      const resumeEl = document.getElementById("resumeInput");
-      const fieldEl = document.getElementById("fieldInput");
-      const buttonEl = document.getElementById("rewriteBtn");
-      const outputEl = document.getElementById("outputArea");
+      const file = files[0];
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (ext !== "pdf" && ext !== "docx") {
+        alert("Only .pdf or .docx files are supported. Please upload a valid resume file.");
+        return;
+      }
 
-      buttonEl.addEventListener("click", async () => {
-        const resumeText = resumeEl.value.trim();
-        const fieldText = fieldEl.value.trim();
+      const formData = new FormData();
+      formData.append("resumeFile", file);
 
-        if (!resumeText) {
-          alert("Please paste your resume text first.");
+      outputEl.textContent = "Extracting text from uploaded file…";
+      try {
+        const resp = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          outputEl.textContent = "Upload error: " + (err.error || resp.statusText);
           return;
         }
 
-        // Show a loading placeholder
-        outputEl.textContent = "Processing… please wait.";
+        const data = await resp.json();
+        const extracted = data.text || "";
 
-        try {
-          // Send a POST to /api/chat with JSON body
-          const resp = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              resumeText: resumeText,
-              field: fieldText || "General",
-            }),
-          });
-
-          // We expect a JSON response for now (placeholder)
-          // Once we connect DeepSeek streaming, we can switch to SSE logic.
-          if (!resp.ok) {
-            const err = await resp.json();
-            outputEl.textContent = "Error: " + (err.error || resp.statusText);
-            return;
-          }
-
-          const data = await resp.json();
-          // If chat.js returns { message: "..." }, display that
-          if (data.message) {
-            outputEl.textContent = data.message;
-          } else {
-            // For future streaming responses, we’ll handle differently.
-            outputEl.textContent = JSON.stringify(data, null, 2);
-          }
-        } catch (error) {
-          outputEl.textContent = "Fetch error: " + error.message;
+        // Check if the extracted text “looks like” a real resume
+        if (!looksLikeResumeText(extracted)) {
+          resumeEl.value = "";
+          outputEl.textContent = "";
+          alert(
+            "It looks like we weren’t able to extract valid resume text from that file.\n" +
+            "Please try a different (text-searchable) PDF or upload a .docx version. If the text is unreadable DeepScan can't give proper feedback!"
+          );
+          return;
         }
-      });
-    </script>
-  </body>
+
+        // If it passes our check, populate the textarea
+        resumeEl.value = extracted;
+        outputEl.textContent = "Resume text extracted. You can now click 'Rewrite Resume.'";
+      } catch (error) {
+        outputEl.textContent = "Fetch error: " + error.message;
+      }
+    });
+
+    // Handle “Rewrite Resume” click
+    rewriteBtn.addEventListener("click", async () => {
+      const resumeText = resumeEl.value.trim();
+      const fieldText = fieldEl.value.trim();
+
+      if (!resumeText) {
+        alert("Please paste or upload your resume text first. PDF and DOCX only.");
+        return;
+      }
+
+      outputEl.textContent = "Processing… please wait.";
+
+      try {
+        const resp = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            resumeText: resumeText,
+            field: fieldText || "General",
+          }),
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          outputEl.textContent = "Error: " + (err.error || resp.statusText);
+          return;
+        }
+
+        const data = await resp.json();
+        if (data.message) {
+          outputEl.textContent = data.message;
+        } else {
+          outputEl.textContent = JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        outputEl.textContent = "Fetch error: " + error.message;
+      }
+    });
+  </script>
+</body>
 </html>
