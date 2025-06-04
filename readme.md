@@ -45,4 +45,3 @@
    ```bash
    git clone https://github.com/BryceLucas/DeepScan.git
    cd DeepScan
-jlaksdjf;
