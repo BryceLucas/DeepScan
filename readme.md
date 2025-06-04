@@ -27,7 +27,7 @@
   - Users can paste raw resume text into a `<textarea>`.  
   - Click “Rewrite Resume” to send the text (and optional field-of-work) to `/api/chat`.  
 - **AI Integration (coming soon)**  
-  - Once you add your `DEEPSEEK_API_KEY` to `.env`, the back end will stream a rewritten résumé from DeepSeek.  
+  - Once you add your `DEEPSEEK_API_KEY` to `.env`, the back end will stream a rewritten resume from DeepSeek.  
 
 ---
 
