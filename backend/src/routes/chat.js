@@ -1,60 +1,52 @@
 import express from "express";
-const router = express.Router();
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
-// If we add the DeepSeek client later, we’d import it here.
-// For now, we stub out a placeholder.
-// import { getDeepSeekCompletion } from "../services/deepseekClient.js";
+const router = express.Router();
 
 router.post("/", async (req, res) => {
   const { resumeText, field } = req.body;
 
-  // 1) Basic validation: make sure resumeText is present
+  // 1) Basic validation
   if (!resumeText || resumeText.trim().length < 1) {
     return res.status(400).json({ error: "Missing resumeText" });
   }
 
-  // 2) If no DeepSeek key has been set, return a dummy JSON message
+  // 2) If no API key, return a placeholder message
   if (!process.env.DEEPSEEK_API_KEY) {
     const placeholder =
-      `DeepSeek key not set yet. We received your résumé for field "${field}".\n\n` +
-      `Once the key is added, this endpoint will return a rewritten résumé with rationales.`;
+      `DeepSeek key not set yet. We received your resume for field "${field}".\n\n` +
+      `Once the key is added, this endpoint will return a rewritten resume with rationales.`;
     return res.json({ message: placeholder });
   }
 
-  // 3) Once we have a key, we’ll do something like this:
-  /*
+  // 3) Actual DeepSeek request
+  console.log("Received resume rewrite request");
+
+  const prompt = `Please improve this resume for a role in ${field}:\n${resumeText}`;
+
   try {
-    // Build the system + user prompts
-    const systemPrompt = `
-      You are DeepScan’s résumé-rewriter.
-      Rewrite the following résumé to be ATS-friendly for the field: ${field}.
-      Provide a short rationale for each change.
-    `;
-    const userPrompt = `Résumé:\n${resumeText}`;
+    const response = await axios.post(
+      "https://api.deepseek.com/v1/chat/completions",
+      {
+        model: "deepseek-chat",
+        messages: [{ role: "user", content: prompt }],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    // Call the DeepSeek service with streaming enabled
-    const stream = await getDeepSeekCompletion({
-      model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
-      systemPrompt,
-      userPrompt,
-    });
-
-    // Tell Express we’re going to send an SSE stream
-    res.setHeader("Content-Type", "text/event-stream");
-    for await (const chunk of stream) {
-      const textPart = chunk.choices[0].delta.content || "";
-      res.write(`data: ${textPart}\n\n`);
-    }
-    res.end();
+    const message = response.data.choices[0].message.content;
+    res.json({ message });
   } catch (err) {
-    console.error("Error calling DeepSeek:", err);
-    res.status(500).json({ error: "DeepSeek request failed" });
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ error: "DeepSeek API error." });
   }
-  */
-
-  // 4) If we never un-comment the above block, this line will just be unreachable.
-  //    So to satisfy ESLint or Node, we return here.
-  return;
 });
 
 export default router;
