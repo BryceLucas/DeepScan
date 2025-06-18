@@ -20,13 +20,13 @@ router.post("/", upload.single("resumeFile"), async (req, res) => {
   }
 
   try {
-    // 1) Get the uploaded file’s path
+    //  Get the uploaded file’s path
     const uploadedFilePath = req.file.path;
-    // 2) Extract plain text from that file
+    //  Extract plain text from that file
     const extractedText = await parseResumeFile(uploadedFilePath);
-    // 3) Delete the temporary file
+    //  Delete the temporary file
     await fs.unlink(uploadedFilePath);
-    // 4) Return the extracted text
+    //  Return the extracted text
     res.json({ text: extractedText });
   } catch (err) {
     console.error("Error in /api/upload:", err);
