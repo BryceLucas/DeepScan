@@ -67,3 +67,23 @@ nav a.active {
 p {
   text-indent: 2rem;
 }
+
+/* This is for the bullet points on the FAQ list */
+dl {
+  margin: 1rem 0;
+}
+
+dt {
+  list-style-type: disc;
+  display: list-item;
+  margin-left: 2rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin-bottom: 0.5rem;
+}
+
+dd {
+  margin-left: 3rem;
+  color: #f3f4f6;
+  margin-bottom: 1rem;
+}
