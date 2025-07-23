@@ -1,4 +1,3 @@
-
 import express from "express";
 import multer from "multer";
 import fs from "fs";
@@ -43,8 +42,9 @@ router.post("/", upload.single("resumeFile"), async (req, res) => {
     let text = "";
 
     if (ext === "pdf") {
-      const buffer = fs.readFileSync(filePath);
-      const { text: pdfText } = await pdfParse(buffer);
+      // ← Fixed: read file into buffer, then parse
+      const dataBuffer = fs.readFileSync(filePath);
+      const { text: pdfText } = await pdfParse(dataBuffer);
       text = pdfText;
     } else if (ext === "docx") {
       const { value } = await mammoth.extractRawText({ path: filePath });
@@ -67,4 +67,5 @@ router.post("/", upload.single("resumeFile"), async (req, res) => {
   }
 });
 
+// Default export so `import uploadRoute from "./routes/upload.js"` works
 export default router;
