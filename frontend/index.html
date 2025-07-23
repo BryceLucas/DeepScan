@@ -169,7 +169,7 @@
         resumeEl.value = extracted;
         outputEl.textContent = "Resume text extracted. You can now click 'Rewrite Resume.'";
       } catch (error) {
-        outputEl.textContent = "Fetch error: " + error.message;
+        outputEl.textContent = "Fetch error(2): " + error.message;
       }
     });
 
@@ -208,7 +208,7 @@
           outputEl.textContent = JSON.stringify(data, null, 2);
         }
       } catch (error) {
-        outputEl.textContent = "Fetch error: " + error.message;
+        outputEl.textContent = "Fetch error(1): " + error.message;
       }
     });
   </script>
