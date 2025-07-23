@@ -1,4 +1,3 @@
-// File: routes/upload.js
 
 import express from "express";
 import multer from "multer";
@@ -11,17 +10,17 @@ import mammoth from "mammoth";
 
 const router = express.Router();
 
-// Fix __dirname inside ES module
+// Fix __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, "../uploads");
+// Ensure uploads folder exists (sibling of src/)
+const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Multer setup: save to our uploads folder, limit to 10 MB
+// Multer config: store in uploads/, max 10MB
 const upload = multer({
   dest: uploadDir,
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -30,7 +29,7 @@ const upload = multer({
 /**
  * POST /api/upload
  * Field: resumeFile
- * Returns: { text: string }
+ * Returns JSON { text: string }
  */
 router.post("/", upload.single("resumeFile"), async (req, res) => {
   if (!req.file) {
@@ -59,11 +58,11 @@ router.post("/", upload.single("resumeFile"), async (req, res) => {
     console.error("Error extracting resume text:", err);
     return res.status(500).json({ error: "Failed to parse file." });
   } finally {
-    // Always clean up the upload
+    // Clean up temp file
     try {
       await fsPromises.unlink(filePath);
-    } catch (_) {
-      // ignore
+    } catch (cleanupErr) {
+      console.warn("Failed to delete temp file:", cleanupErr);
     }
   }
 });
