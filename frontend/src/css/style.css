@@ -106,3 +106,23 @@ dd {
   color: #f3f4f6;
   margin-bottom: 1rem;
 }
+body.contact-page .container {
+  text-align: center;
+}
+
+body.contact-page .contact-list {
+  list-style-position: inside;
+  padding: 0;
+  margin: 1em auto;
+}
+
+body.contact-page .contact-list li {
+  margin-bottom: 0.5rem;
+}
+
+body.contact-page .campus-photo img {
+  display: block;
+  margin: 2rem auto 0;
+  max-width: 100%;
+  height: auto;
+}
