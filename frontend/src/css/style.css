@@ -126,3 +126,15 @@ body.contact-page .campus-photo img {
   max-width: 100%;
   height: auto;
 }
+#experience-input {
+  width: 100%;           /* fill the container */
+  max-width: 100%;       /* don’t overflow */
+  height: 250px;         /* adjust height as needed */
+  padding: 0.75rem;      /* match your site’s spacing */
+  box-sizing: border-box;/* include padding in width */
+  font-size: 1rem;       /* readable text */
+  background: #1f2937;   /* same style as other inputs? */
+  color: #f3f4f6;
+  border: 1px solid #374151;
+  border-radius: 0.25rem;
+}
