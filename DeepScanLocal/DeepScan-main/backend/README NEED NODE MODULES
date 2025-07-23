@@ -1,0 +1,40 @@
+inside of the file you will need to run this bash in command line "this worked best for me" 
+
+npm install
+
+this should install all the necessary files that will be needed to run
+
+after this VERY IMPORTANT we must comment out some lines inside of the file we just downloaded
+
+Open the node_modules file and scroll down to pdf-parse.
+open the index.js file in vscode
+change the code to this
+-----------------------------------------------------------------------------
+const Fs = require('fs');
+const Pdf = require('./lib/pdf-parse.js');
+
+module.exports = Pdf;
+
+// let isDebugMode = !module.parent; 
+
+//process.env.AUTO_KENT_DEBUG
+
+
+//for testing purpose
+// if (isDebugMode) {
+
+//     let PDF_FILE = './test/data/05-versions-space.pdf';
+//     let dataBuffer = Fs.readFileSync(PDF_FILE);
+//     Pdf(dataBuffer).then(function(data) {
+//         Fs.writeFileSync(`${PDF_FILE}.txt`, data.text, {
+//             encoding: 'utf8',
+//             flag: 'w'
+//         });
+//         debugger;
+//     }).catch(function(err) {
+//         debugger;
+//     });
+
+// }
+----------------------------------------------------------------------------
+save the file, and try running the server
