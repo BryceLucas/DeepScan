@@ -23,11 +23,13 @@ body {
 }
 
 .about-ds-page p {
+  text-align: center;
   font-size: 1.125rem; /* bigger font for paragraphs only on about-ds.html */
   text-indent: 2rem;
 }
 
 .about-us-page p {
+  text-align: center;
   font-size: 1.125rem; /* bigger font for paragraphs only on about-ds.html */
   text-indent: 2rem;
 }
