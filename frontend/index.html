@@ -1,217 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeepScan</title>
-  <link rel="stylesheet" href="./src/css/style.css" />
-  <style>
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: 600;
-      color: #f3f4f6;
-    }
-    textarea,
-    input[type="text"],
-    input[type="file"] {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      font-size: 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      box-sizing: border-box;
-      background: #1f2937;
-      color: #f3f4f6;
-    }
-    button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #1d4ed8;
-    }
-    pre {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #1f2937;
-      color: #f3f4f6;
-      border-radius: 4px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-  </style>
-</head>
-<body>
-  <!-- Navigation Bar -->
-  <nav>
-    <ul>
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="./src/pages/about-ds.html">About DeepScan</a></li>
-      <li><a href="./src/pages/about-us.html">About Us</a></li>
-      <li><a href="./src/pages/faq.html">FAQ</a></li>
-      <li><a href="./src/pages/contact-us.html">Contact Us</a></li>
-    </ul>
-  </nav>
-
-  <div class="container">
-    <img src="./img/DS-Transp-Small.png" alt="DeepScan Logo">
-
-    <!--<h1>DeepScan – Coming Soon</h1>-->
-    
-    <!-- FILE UPLOAD -->
-    <label for="fileInput">Or Upload Your Resume (PDF or DOCX):</label>
-    <input id="fileInput" type="file" accept=".pdf,.docx" />
-    <button id="uploadBtn">Upload and Extract Text</button>
-
-    <!-- Resume input (either paste or after extraction) -->
-    <label for="resumeInput">Paste Your Resume Text Here:</label>
-    <textarea id="resumeInput" rows="8" placeholder="Name, Experience, Skills…"></textarea>
-    
-    <!-- Field-of-work input -->
-    <label for="fieldInput">Field of Work (optional):</label>
-    <input id="fieldInput" type="text" placeholder="e.g. Software Engineering" />
-    
-    <!-- Trigger rewrite -->
-    <button id="rewriteBtn">Rewrite Resume</button>
-    
-    <!-- Area to display server response -->
-    <pre id="outputArea">The rewrite will appear here…</pre>
-  </div>
-
-  <script>
-    // DOM references
-    const fileEl = document.getElementById("fileInput");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const resumeEl = document.getElementById("resumeInput");
-    const fieldEl = document.getElementById("fieldInput");
-    const rewriteBtn = document.getElementById("rewriteBtn");
-    const outputEl = document.getElementById("outputArea");
-
-    // A more robust check for “resume-like” text
-    function looksLikeResumeText(str) {
-      let printableCount = 0;
-      for (let ch of str) {
-        if (/[\w\d ,.'"()\-:;!?]/.test(ch)) {
-          printableCount++;
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepScan</title>
+    <link rel="icon" type="image/x-icon" href="src/logo.ico" />
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <style>
+      label {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 600;
+        color: #f3f4f6;
       }
-      // Must have at least 300 printable chars
-      if (printableCount < 150) {
+      textarea,
+      input[type="text"],
+      input[type="file"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        font-size: 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background: #1f2937;
+        color: #f3f4f6;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      pre {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #1f2937;
+        color: #f3f4f6;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav>
+      <ul>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="./src/pages/about-ds.html">About DeepScan</a></li>
+        <li><a href="./src/pages/about-us.html">About Us</a></li>
+        <li><a href="./src/pages/faq.html">FAQ</a></li>
+        <li><a href="./src/pages/resumebuilder.html">Resume Builder</a></li>
+        <li><a href="./src/pages/contact-us.html">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <img src="./img/DS-Transp-Small.png" alt="DeepScan Logo" />
+
+      <!--<h1>DeepScan – Coming Soon</h1>-->
+
+      <!-- FILE UPLOAD -->
+      <label for="fileInput">Or Upload Your Resume (PDF or DOCX):</label>
+      <input id="fileInput" type="file" accept=".pdf,.docx" />
+      <button id="uploadBtn">Upload and Extract Text</button>
+
+      <!-- Resume input (either paste or after extraction) -->
+      <label for="resumeInput">Paste Your Resume Text Here:</label>
+      <textarea
+        id="resumeInput"
+        rows="8"
+        placeholder="Name, Experience, Skills…"
+      ></textarea>
+
+      <!-- Field-of-work input -->
+      <label for="fieldInput">Field of Work (optional):</label>
+      <input
+        id="fieldInput"
+        type="text"
+        placeholder="e.g. Software Engineering"
+      />
+
+      <!-- Trigger rewrite -->
+      <button id="rewriteBtn">Rewrite Resume</button>
+
+      <!-- Area to display server response -->
+      <pre id="outputArea">The rewrite will appear here…</pre>
+    </div>
+
+    <script>
+      // DOM references
+      const fileEl = document.getElementById("fileInput");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const resumeEl = document.getElementById("resumeInput");
+      const fieldEl = document.getElementById("fieldInput");
+      const rewriteBtn = document.getElementById("rewriteBtn");
+      const outputEl = document.getElementById("outputArea");
+
+      // A more robust check for “resume-like” text
+      function looksLikeResumeText(str) {
+        let printableCount = 0;
+        for (let ch of str) {
+          if (/[\w\d ,.'"()\-:;!?]/.test(ch)) {
+            printableCount++;
+          }
+        }
+        // Must have at least 300 printable chars
+        if (printableCount < 150) {
+          return false;
+        }
+        // Must include at least one common resume word
+        const lower = str.toLowerCase();
+        const keywords = [
+          "experience",
+          "education",
+          "skills",
+          "objective",
+          "work",
+        ];
+        for (const word of keywords) {
+          if (lower.includes(word)) {
+            return true;
+          }
+        }
+        // If no keywords found, fail the check
         return false;
       }
-      // Must include at least one common resume word
-      const lower = str.toLowerCase();
-      const keywords = ["experience", "education", "skills", "objective", "work"];
-      for (const word of keywords) {
-        if (lower.includes(word)) {
-          return true;
-        }
-      }
-      // If no keywords found, fail the check
-      return false;
-    }
 
-    // 1) Handle “Upload and Extract Text” click
-    uploadBtn.addEventListener("click", async () => {
-      const files = fileEl.files;
-      if (!files || files.length === 0) {
-        alert("Please choose a PDF or DOCX file first.");
-        return;
-      }
-
-      const file = files[0];
-      const ext = file.name.split(".").pop().toLowerCase();
-      if (ext !== "pdf" && ext !== "docx") {
-        alert("Only .pdf or .docx files are supported. Please upload a valid resume file.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("resumeFile", file);
-
-      outputEl.textContent = "Extracting text from uploaded file…";
-      try {
-        const resp = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!resp.ok) {
-          const err = await resp.json();
-          outputEl.textContent = "Upload error: " + (err.error || resp.statusText);
+      // 1) Handle “Upload and Extract Text” click
+      uploadBtn.addEventListener("click", async () => {
+        const files = fileEl.files;
+        if (!files || files.length === 0) {
+          alert("Please choose a PDF or DOCX file first.");
           return;
         }
 
-        const data = await resp.json();
-        const extracted = data.text || "";
-
-        // Check if the extracted text “looks like” a real resume
-        if (!looksLikeResumeText(extracted)) {
-          resumeEl.value = "";
-          outputEl.textContent = "";
+        const file = files[0];
+        const ext = file.name.split(".").pop().toLowerCase();
+        if (ext !== "pdf" && ext !== "docx") {
           alert(
-            "It looks like we weren’t able to extract valid resume text from that file.\n" +
-            "Please try a different (text-searchable) PDF or upload a .docx version. If the text is unreadable DeepScan can't give proper feedback!"
+            "Only .pdf or .docx files are supported. Please upload a valid resume file."
           );
           return;
         }
 
-        // If it passes our check, populate the textarea
-        resumeEl.value = extracted;
-        outputEl.textContent = "Resume text extracted. You can now click 'Rewrite Resume.'";
-      } catch (error) {
-        outputEl.textContent = "Fetch error(2): " + error.message;
-      }
-    });
+        const formData = new FormData();
+        formData.append("resumeFile", file);
 
-    // Handle “Rewrite Resume” click
-    rewriteBtn.addEventListener("click", async () => {
-      const resumeText = resumeEl.value.trim();
-      const fieldText = fieldEl.value.trim();
+        outputEl.textContent = "Extracting text from uploaded file…";
+        try {
+          const resp = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
 
-      if (!resumeText) {
-        alert("Please paste or upload your resume text first. PDF and DOCX only.");
-        return;
-      }
+          if (!resp.ok) {
+            const err = await resp.json();
+            outputEl.textContent =
+              "Upload error: " + (err.error || resp.statusText);
+            return;
+          }
 
-      outputEl.textContent = "Processing… please wait.";
+          const data = await resp.json();
+          const extracted = data.text || "";
 
-      try {
-        const resp = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            resumeText: resumeText,
-            field: fieldText || "General",
-          }),
-        });
+          // Check if the extracted text “looks like” a real resume
+          if (!looksLikeResumeText(extracted)) {
+            resumeEl.value = "";
+            outputEl.textContent = "";
+            alert(
+              "It looks like we weren’t able to extract valid resume text from that file.\n" +
+                "Please try a different (text-searchable) PDF or upload a .docx version. If the text is unreadable DeepScan can't give proper feedback!"
+            );
+            return;
+          }
 
-        if (!resp.ok) {
-          const err = await resp.json();
-          outputEl.textContent = "Error: " + (err.error || resp.statusText);
+          // If it passes our check, populate the textarea
+          resumeEl.value = extracted;
+          outputEl.textContent =
+            "Resume text extracted. You can now click 'Rewrite Resume.'";
+        } catch (error) {
+          outputEl.textContent = "Fetch error(2): " + error.message;
+        }
+      });
+
+      // Handle “Rewrite Resume” click
+      rewriteBtn.addEventListener("click", async () => {
+        const resumeText = resumeEl.value.trim();
+        const fieldText = fieldEl.value.trim();
+
+        if (!resumeText) {
+          alert(
+            "Please paste or upload your resume text first. PDF and DOCX only."
+          );
           return;
         }
 
-        const data = await resp.json();
-        if (data.message) {
-          outputEl.textContent = data.message;
-        } else {
-          outputEl.textContent = JSON.stringify(data, null, 2);
+        outputEl.textContent = "Processing… please wait.";
+
+        try {
+          const resp = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              resumeText: resumeText,
+              field: fieldText || "General",
+            }),
+          });
+
+          if (!resp.ok) {
+            const err = await resp.json();
+            outputEl.textContent = "Error: " + (err.error || resp.statusText);
+            return;
+          }
+
+          const data = await resp.json();
+          if (data.message) {
+            outputEl.textContent = data.message;
+          } else {
+            outputEl.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          outputEl.textContent = "Fetch error(1): " + error.message;
         }
-      } catch (error) {
-        outputEl.textContent = "Fetch error(1): " + error.message;
-      }
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 </html>
