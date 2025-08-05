@@ -34,7 +34,23 @@
    <textarea id="experience-input" placeholder="Input your experience here" cols = 300></textarea>
 
    <button id="uploadexp">Upload</button>
+
+  <pre id="outputArea">The result will appear here...</pre>
   
 </div>
+
+<script>
+
+const experienceinput = document.getElementById("experience-input");
+const output = document.getElementById("outputArea");
+const uploadButton = document.getElementById("uploadexp");
+
+  uploadButton.addEventListener("click", async () => 
+                            
+  output.textContent = experienceinput.textContent;
+  }
+  
+</script>
+  
 </body>
 </html>
