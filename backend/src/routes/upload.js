@@ -9,6 +9,12 @@ import mammoth from "mammoth";
 
 const router = express.Router();
 
+// Quick health endpoint to verify proxy
+router.get("/health", (_req, res) => {
+  console.log("✅  [upload] /api/upload/health hit");
+  return res.json({ ok: true, route: "/api/upload/health" });
+});
+
 // Fix __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,11 +31,6 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-/**
- * POST /api/upload
- * Field: resumeFile
- * Returns JSON { text: string }
- */
 router.post("/", upload.single("resumeFile"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded." });
