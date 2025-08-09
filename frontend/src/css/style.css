@@ -120,6 +120,14 @@ body.contact-page .contact-list li {
   margin-bottom: 0.5rem;
 }
 
+body.contact-page .contact-list a {
+  color: #60a5fa; /* Light blue color */
+}
+
+body.contact-page .contact-list a:hover {
+  color: #93c5fd;
+}
+
 body.contact-page .campus-photo img {
   display: block;
   margin: 2rem auto 0;
