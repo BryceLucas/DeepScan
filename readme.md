@@ -46,3 +46,10 @@
    git clone https://github.com/BryceLucas/DeepScan.git
    cd DeepScan
    test
+**Contributors**
+-AidanChapman: Aidan Chapman
+-BryceLucas: Bryce Lucas
+-Kolemicakaj Kole Micakaj
+-ATJOakland: Andrae Taylor
+-AMagicalBiscuit: Mike Lafata
+  
