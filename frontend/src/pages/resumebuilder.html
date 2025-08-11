@@ -1,56 +1,457 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-  <!--Basic inclusion stuff-->
+  <!-- Eisting head links -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Resume</title>
-  <link rel="icon" type="image/x-icon" href="../logo.ico">
+  <title>Resume Builder • DeepScan</title>
+  <link rel="icon" type="image/x-icon" href="../img/logo.ico" />
   <link rel="stylesheet" href="../css/style.css" />
   <script src="../js/dark-style-button.js" defer></script>
-</head>
 
+  <!-- Scoped styles for the builder so we don't clash with site CSS -->
+  <style>
+    :root { --gap: 1rem; }
+
+    /* Centered and wider wrap */
+    .rb-wrap { 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 2rem; 
+    }
+
+    /* Grid layout */
+    .rb-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 2rem; /* wider gap between form and preview */
+      align-items: start; 
+    }
+    @media (max-width: 1000px) { 
+      .rb-grid { grid-template-columns: 1fr; } 
+    }
+
+    /* Card container */
+    .rb-card { 
+      background: var(--card-bg, #111); 
+      border: 1px solid rgba(255,255,255,.08); 
+      border-radius: 12px; 
+      padding: 2rem; /* more padding inside cards */
+      box-shadow: 0 8px 20px rgba(0,0,0,.25); 
+    }
+
+    .rb-card h2 { margin: 0 0 .5rem; font-size: 1.25rem; }
+
+    .rb-section-title { 
+      margin-top: 2.5rem; /* bigger space above section titles */
+      margin-bottom: 1rem;
+      font-weight: 700; 
+      font-size: 1.1rem; 
+      border-bottom: 1px dashed rgba(255,255,255,.15); 
+      padding-bottom: .25rem; 
+    }
+
+    /* Row and columns */
+    .rb-row { 
+      display: grid; 
+      grid-template-columns: repeat(12, 1fr); 
+      gap: 2rem; /* bigger horizontal gaps */
+    }
+    .rb-col-6 { grid-column: span 6; min-width: 0; }
+    .rb-col-12 { grid-column: span 12; min-width: 0; }
+
+    /* Inputs */
+    .rb-input, .rb-textarea, .rb-select { 
+      width: 100%; 
+      min-width: 0; 
+      box-sizing: border-box; 
+      padding: 0.85rem 1.5rem; /* more padding inside inputs */
+      border-radius: 10px; 
+      border: 1px solid rgba(255,255,255,.15); 
+      background: rgba(255,255,255,.02); 
+      color: inherit; 
+      font-size: 1rem; 
+      line-height: 1.3;
+    }
+    .rb-textarea { min-height: 130px; resize: vertical; }
+
+    /* Actions */
+    .rb-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+    .rb-btn { border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.04); color: inherit; padding: .55rem .8rem; border-radius: 10px; cursor: pointer; }
+    .rb-btn.primary { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+    .rb-btn.ghost { background: transparent; }
+    .rb-tagbox { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .rb-chip { border: 1px solid rgba(255,255,255,.2); padding: .25rem .5rem; border-radius: 999px; font-size: .9rem; }
+
+    /* Dynamic block spacing */
+    #f-experiences, #f-educations, #f-projects { 
+      display: grid; 
+      gap: 1.5rem; 
+    }
+    #f-experiences .rb-card,
+    #f-educations .rb-card,
+    #f-projects .rb-card { margin: 0; }
+
+    /* Preview */
+    .rb-preview { 
+      background: #fff; 
+      color: #111; 
+      border-radius: 12px; 
+      border: 1px solid #e5e7eb; 
+      padding: 2rem; /* match form card padding */
+      position: sticky; 
+      top: 16px; 
+    }
+    .rb-p-pad { padding: 1.25rem; }
+    .rb-p-name { font-size: 1.75rem; font-weight: 800; letter-spacing: .3px; }
+    .rb-p-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: .6rem; }
+    .rb-p-contact { text-align: right; font-size: .95rem; }
+    .rb-p-section { margin-top: 1rem; }
+    .rb-p-h2 { font-size: 1.05rem; font-weight: 800; border-bottom: 1px solid #e5e7eb; padding-bottom: .25rem; margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .04em; }
+    .rb-item { margin: .5rem 0; }
+    .rb-item h3 { margin: 0; font-size: 1rem; }
+    .rb-item .sub { color: #4b5563; font-size: .95rem; }
+    .rb-bullets { margin: .25rem 0 0 1rem; }
+
+    /* Print: only print the preview */
+    @media print {
+      body * { visibility: hidden; }
+      #rb-print { position: absolute; left: 0; top: 0; width: 100%; }
+      #rb-print, #rb-print * { visibility: visible; }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 1000px) {
+      .rb-grid { grid-template-columns: 1fr; }
+      .rb-row { grid-template-columns: 1fr; gap: 1rem; }
+    }
+</style>
+
+</head>
 <body class="resumebuilder">
-  <!--Navigation Bar-->
+  <!-- Keep your existing site nav here if you have a shared include -->
   <nav>
     <ul>
       <li><a href="../../index.html">Home</a></li>
       <li><a href="./about-ds.html">About DeepScan</a></li>
-      <li><a href="./about-us.html">About Us</a></li>
       <li><a href="./faq.html">FAQ</a></li>
-      <li><a href="./resumebuilder.html" class="active">Resume Builder</a></li>
+      <li><a class="active" href="./resumebuilder.html">Resume Builder</a></li>
       <li><a href="./contact-us.html">Contact Us</a></li>
     </ul>
   </nav>
-  <!--Sctual important stuff-->
-<div class="container">
-  <img src="../../img/DS-Transp-Small.png" alt="DeepScan Logo">    
-  <h1>Resume Builder</h1>
-    
-  <p>
-    The resume builder will (eventually) allow you to build a resume from scratch with DeepSeek. You will be able to put in relevant work experience, and DeepSeek will create
-    a resume from that.
-  </p>
 
-  <textarea id="experience-input" placeholder="Input your experience here" cols = 300></textarea>
+  <div class="rb-wrap">
+    <h1>Resume Builder</h1>
+    <p>Fill the form on the left. The preview updates live on the right. Save your draft locally, export JSON, or print to PDF.</p>
 
-  <button id="uploadexp">Upload</button>
+    <div class="rb-grid">
+      <!-- FORM COLUMN -->
+      <section class="rb-card" aria-label="Form">
+        <h2>1) Your Details</h2>
+        <div class="rb-row">
+          <div class="rb-col-6"><label>First & Last Name<input class="rb-input" id="f-name" placeholder="Jane Doe"></label></div>
+          <div class="rb-col-6"><label>Role / Headline<input class="rb-input" id="f-headline" placeholder="Software Engineer"></label></div>
+          <div class="rb-col-6"><label>Email<input class="rb-input" id="f-email" placeholder="jane@domain.com"></label></div>
+          <div class="rb-col-6"><label>Phone<input class="rb-input" id="f-phone" placeholder="(555) 555-5555"></label></div>
+          <div class="rb-col-6"><label>City, State<input class="rb-input" id="f-location" placeholder="Detroit, MI"></label></div>
+          <div class="rb-col-6"><label>Website / LinkedIn<input class="rb-input" id="f-link" placeholder="linkedin.com/in/janedoe"></label></div>
+          <div class="rb-col-12"><label>Professional Summary<textarea class="rb-textarea" id="f-summary" placeholder="2–3 sentences that capture your impact."></textarea></label></div>
+        </div>
 
-  <pre id="outputArea">The result will appear here...</pre>
-  
-</div>
+        <h2 class="rb-section-title">2) Skills</h2>
+        <div class="rb-row">
+          <div class="rb-col-12">
+            <label>Add a skill and press Enter
+              <input class="rb-input" id="f-skill-input" placeholder="Python" />
+            </label>
+            <div id="f-skills" class="rb-tagbox" aria-live="polite"></div>
+          </div>
+        </div>
 
-<script>
+        <h2 class="rb-section-title">3) Work Experience</h2>
+        <div id="f-experiences"></div>
+        <div class="rb-actions">
+          <button class="rb-btn" id="btn-add-exp">+ Add Experience</button>
+        </div>
 
-const experienceinput = document.getElementById("experience-input");
-const output = document.getElementById("outputArea");
-const uploadButton = document.getElementById("uploadexp");
+        <h2 class="rb-section-title">4) Education</h2>
+        <div id="f-educations"></div>
+        <div class="rb-actions">
+          <button class="rb-btn" id="btn-add-edu">+ Add Education</button>
+        </div>
 
-  uploadButton.addEventListener("click", async () => 
-                            
-  output.textContent = experienceinput.textContent;
-  }
-  
-</script>
-  
+        <h2 class="rb-section-title">5) Projects (optional)</h2>
+        <div id="f-projects"></div>
+        <div class="rb-actions">
+          <button class="rb-btn" id="btn-add-proj">+ Add Project</button>
+        </div>
+
+        <div class="rb-actions" style="margin-top:1rem">
+          <button class="rb-btn primary" id="btn-save">Save Draft</button>
+          <button class="rb-btn" id="btn-load">Load Draft</button>
+          <button class="rb-btn" id="btn-export-json">Export JSON</button>
+          <label class="rb-btn ghost" for="import-json" style="cursor:pointer;">Import JSON<input type="file" id="import-json" accept="application/json" style="display:none"></label>
+          <button class="rb-btn" id="btn-print">Download PDF</button>
+          <!-- Placeholder for future DeepSeek integration -->
+          <button class="rb-btn ghost" id="btn-ai" title="Sends your current resume data to DeepScan backend for enhancement">Build with DeepSeek (beta)</button>
+        </div>
+      </section>
+
+      <!-- PREVIEW COLUMN -->
+      <section class="rb-card rb-preview" id="rb-print" aria-label="Preview">
+        <div class="rb-p-pad" id="preview-root">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <template id="tpl-experience">
+    <div class="rb-card" data-block="experience">
+      <div class="rb-actions" style="justify-content:flex-end"><button class="rb-btn ghost btn-remove">Remove</button></div>
+      <div class="rb-row">
+        <div class="rb-col-6"><label>Job Title<input class="rb-input input-title" placeholder="Software Engineer"></label></div>
+        <div class="rb-col-6"><label>Company<input class="rb-input input-company" placeholder="DeepScan"></label></div>
+        <div class="rb-col-6"><label>Start<input class="rb-input input-start" placeholder="2023"></label></div>
+        <div class="rb-col-6"><label>End<input class="rb-input input-end" placeholder="Present"></label></div>
+        <div class="rb-col-12"><label>Highlights (one per line)<textarea class="rb-textarea input-bullets" placeholder="List key accomplishments, one per line:
+        • Built and launched a customer portal that increased engagement by 25%
+        • Reduced server costs by 15% through backend optimizations
+        • Led a team to deliver features ahead of schedule"></textarea>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-education">
+    <div class="rb-card" data-block="education">
+      <div class="rb-actions" style="justify-content:flex-end"><button class="rb-btn ghost btn-remove">Remove</button></div>
+      <div class="rb-row">
+        <div class="rb-col-6"><label>School<input class="rb-input input-school" placeholder="Oakland University"></label></div>
+        <div class="rb-col-6"><label>Degree / Field<input class="rb-input input-degree" placeholder="B.S. Computer Science"></label></div>
+        <div class="rb-col-6"><label>Start<input class="rb-input input-start" placeholder="2020"></label></div>
+        <div class="rb-col-6"><label>End<input class="rb-input input-end" placeholder="2024"></label></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-project">
+    <div class="rb-card" data-block="project">
+      <div class="rb-actions" style="justify-content:flex-end"><button class="rb-btn ghost btn-remove">Remove</button></div>
+      <div class="rb-row">
+        <div class="rb-col-6"><label>Project Name<input class="rb-input input-name" placeholder="DeepScan"></label></div>
+        <div class="rb-col-6"><label>Link<input class="rb-input input-link" placeholder="https://..."></label></div>
+        <div class="rb-col-12"><label>Description<textarea class="rb-textarea input-desc" placeholder="One or two sentences, or bullet points."></textarea></label></div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // ===== Utilities =====
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    const API_BASE = window.location.host.includes("deepscanproject.icu")
+      ? "https://deepscanproject.icu/api"
+      : "/api"; // local dev proxy or same-origin
+
+    const state = {
+      skills: [],
+      experiences: [],
+      educations: [],
+      projects: []
+    };
+
+    // ===== Dynamic Blocks =====
+    function addBlock(containerId, templateId, listKey) {
+      const host = document.getElementById(containerId);
+      const node = document.getElementById(templateId).content.cloneNode(true);
+      const block = node.querySelector('[data-block]');
+      host.appendChild(node);
+      const added = host.lastElementChild;
+      added.querySelector('.btn-remove').addEventListener('click', () => { added.remove(); render(); saveDraft(false); });
+      // Re-render on input
+      $$('.rb-input, .rb-textarea', added).forEach(inp => inp.addEventListener('input', () => { render(); saveDraft(false); }));
+      render();
+      return added;
+    }
+
+    // Buttons to add blocks
+    document.getElementById('btn-add-exp').addEventListener('click', (e)=>{ e.preventDefault(); addBlock('f-experiences','tpl-experience','experiences'); });
+    document.getElementById('btn-add-edu').addEventListener('click', (e)=>{ e.preventDefault(); addBlock('f-educations','tpl-education','educations'); });
+    document.getElementById('btn-add-proj').addEventListener('click', (e)=>{ e.preventDefault(); addBlock('f-projects','tpl-project','projects'); });
+
+    // Skills chips
+    const skillInput = document.getElementById('f-skill-input');
+    const skillBox = document.getElementById('f-skills');
+    skillInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && skillInput.value.trim()){
+        e.preventDefault();
+        const val = skillInput.value.trim();
+        state.skills.push(val);
+        skillInput.value = '';
+        renderSkills(); render(); saveDraft(false);
+      }
+    });
+
+    function renderSkills(){
+      skillBox.innerHTML='';
+      state.skills.forEach((s, idx)=>{
+        const chip = document.createElement('span');
+        chip.className='rb-chip';
+        chip.textContent = s + ' ×';
+        chip.style.cursor='pointer';
+        chip.title='Remove';
+        chip.addEventListener('click', ()=>{ state.skills.splice(idx,1); renderSkills(); render(); saveDraft(false); });
+        skillBox.appendChild(chip);
+      });
+    }
+
+    // Form field listeners
+    ['f-name','f-headline','f-email','f-phone','f-location','f-link','f-summary'].forEach(id=>{
+      document.getElementById(id).addEventListener('input', ()=>{ render(); saveDraft(false); });
+    });
+
+    // Collect form data to JSON
+    function collectData(){
+      const experiences = $$('#f-experiences > [data-block]').map(el=>({
+        title: $('.input-title', el).value.trim(),
+        company: $('.input-company', el).value.trim(),
+        start: $('.input-start', el).value.trim(),
+        end: $('.input-end', el).value.trim(),
+        bullets: $('.input-bullets', el).value.split('\n').map(s=>s.trim()).filter(Boolean)
+      }));
+      const educations = $$('#f-educations > [data-block]').map(el=>({
+        school: $('.input-school', el).value.trim(),
+        degree: $('.input-degree', el).value.trim(),
+        start: $('.input-start', el).value.trim(),
+        end: $('.input-end', el).value.trim()
+      }));
+      const projects = $$('#f-projects > [data-block]').map(el=>({
+        name: $('.input-name', el).value.trim(),
+        link: $('.input-link', el).value.trim(),
+        desc: $('.input-desc', el).value.trim()
+      }));
+      return {
+        name: document.getElementById('f-name').value.trim(),
+        headline: document.getElementById('f-headline').value.trim(),
+        email: document.getElementById('f-email').value.trim(),
+        phone: document.getElementById('f-phone').value.trim(),
+        location: document.getElementById('f-location').value.trim(),
+        link: document.getElementById('f-link').value.trim(),
+        summary: document.getElementById('f-summary').value.trim(),
+        skills: state.skills.slice(),
+        experiences, educations, projects
+      };
+    }
+
+    // Render preview
+    function render(){
+      const d = collectData();
+      const root = document.getElementById('preview-root');
+      root.innerHTML = `
+        <div class="rb-p-top">
+          <div>
+            <div class="rb-p-name">${escapeHtml(d.name || 'Your Name')}</div>
+            <div>${escapeHtml(d.headline || '')}</div>
+          </div>
+          <div class="rb-p-contact">
+            ${escapeHtml(d.email || '')}<br/>
+            ${escapeHtml(d.phone || '')}<br/>
+            ${escapeHtml(d.location || '')}<br/>
+            ${escapeHtml(d.link || '')}
+          </div>
+        </div>
+        ${d.summary ? `<div class="rb-p-section"><div class="rb-p-h2">Summary</div><div>${escapeHtml(d.summary)}</div></div>` : ''}
+        ${d.skills.length ? `<div class="rb-p-section"><div class="rb-p-h2">Skills</div><div>${d.skills.map(s=>`<span class="rb-chip" style="border-color:#e5e7eb">${escapeHtml(s)}</span>`).join(' ')}</div></div>`: ''}
+        ${d.experiences.length ? `<div class="rb-p-section"><div class="rb-p-h2">Experience</div>${d.experiences.map(exp=>`
+          <div class="rb-item">
+            <h3>${escapeHtml(exp.title)} — ${escapeHtml(exp.company)}</h3>
+            <div class="sub">${escapeHtml(exp.start)} – ${escapeHtml(exp.end)}</div>
+            ${exp.bullets?.length ? `<ul class="rb-bullets">${exp.bullets.map(b=>`<li>${escapeHtml(b)}</li>`).join('')}</ul>`: ''}
+          </div>`).join('')}</div>` : ''}
+        ${d.educations.length ? `<div class="rb-p-section"><div class="rb-p-h2">Education</div>${d.educations.map(ed=>`
+          <div class="rb-item">
+            <h3>${escapeHtml(ed.degree)} — ${escapeHtml(ed.school)}</h3>
+            <div class="sub">${escapeHtml(ed.start)} – ${escapeHtml(ed.end)}</div>
+          </div>`).join('')}</div>` : ''}
+        ${d.projects.length ? `<div class="rb-p-section"><div class="rb-p-h2">Projects</div>${d.projects.map(p=>`
+          <div class="rb-item">
+            <h3>${escapeHtml(p.name)}${p.link?` — <a href="${escapeAttr(p.link)}">${escapeHtml(p.link)}</a>`:''}</h3>
+            <div>${escapeHtml(p.desc)}</div>
+          </div>`).join('')}</div>` : ''}
+      `;
+    }
+
+    // Escape helpers to avoid HTML injection
+    function escapeHtml(s=''){ return s.replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])); }
+    function escapeAttr(s=''){ return s.replace(/["'>]/g, '_'); }
+
+    // Save / Load draft (localStorage)
+    function saveDraft(showToast=true){ localStorage.setItem('rb-draft', JSON.stringify(collectData())); if(showToast) notify('Draft saved'); }
+    function loadDraft(){ const raw = localStorage.getItem('rb-draft'); if(!raw) return notify('No draft found'); try{ const d = JSON.parse(raw); hydrate(d); notify('Draft loaded'); }catch{ notify('Could not load draft'); } }
+
+    function hydrate(d){
+      $('#f-name').value = d.name||''; $('#f-headline').value = d.headline||''; $('#f-email').value = d.email||''; $('#f-phone').value = d.phone||''; $('#f-location').value = d.location||''; $('#f-link').value = d.link||''; $('#f-summary').value = d.summary||'';
+      state.skills = Array.isArray(d.skills)? d.skills : [];
+      renderSkills();
+      // clear dynamic lists then rebuild
+      $('#f-experiences').innerHTML='';
+      (d.experiences||[]).forEach(exp=>{ const el = addBlock('f-experiences','tpl-experience'); $('.input-title', el).value=exp.title||''; $('.input-company', el).value=exp.company||''; $('.input-start', el).value=exp.start||''; $('.input-end', el).value=exp.end||''; $('.input-bullets', el).value=(exp.bullets||[]).join('\n'); });
+      $('#f-educations').innerHTML='';
+      (d.educations||[]).forEach(ed=>{ const el = addBlock('f-educations','tpl-education'); $('.input-school', el).value=ed.school||''; $('.input-degree', el).value=ed.degree||''; $('.input-start', el).value=ed.start||''; $('.input-end', el).value=ed.end||''; });
+      $('#f-projects').innerHTML='';
+      (d.projects||[]).forEach(p=>{ const el = addBlock('f-projects','tpl-project'); $('.input-name', el).value=p.name||''; $('.input-link', el).value=p.link||''; $('.input-desc', el).value=p.desc||''; });
+      render();
+    }
+
+    // Buttons
+    document.getElementById('btn-save').addEventListener('click', (e)=>{ e.preventDefault(); saveDraft(); });
+    document.getElementById('btn-load').addEventListener('click', (e)=>{ e.preventDefault(); loadDraft(); });
+    document.getElementById('btn-print').addEventListener('click', (e)=>{ e.preventDefault(); window.print(); });
+
+    // Export / Import JSON
+    document.getElementById('btn-export-json').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(collectData(), null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'resume-data.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+    document.getElementById('import-json').addEventListener('change', (e)=>{
+      const file = e.target.files?.[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => { try{ hydrate(JSON.parse(reader.result)); }catch{ notify('Invalid JSON'); } };
+      reader.readAsText(file);
+    });
+
+    // Placeholder: call your DeepScan backend
+    document.getElementById('btn-ai').addEventListener('click', async ()=>{
+      try {
+        const res = await fetch(`${API_BASE}/build`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(collectData()) });
+        if(!res.ok) throw new Error('Request failed');
+        const out = await res.json();
+        notify('DeepSeek enhancement complete');
+        if(out.summary) { document.getElementById('f-summary').value = out.summary; }
+        if(out.skills) { state.skills = out.skills; renderSkills(); }
+        // Optionally merge experiences/education
+        render();
+      } catch (err) {
+        notify('Could not reach backend. Configure /api/build when ready.');
+      }
+    });
+
+    function notify(msg){
+      // Tiny toast
+      const t = document.createElement('div');
+      t.textContent = msg; t.style.position='fixed'; t.style.bottom='1rem'; t.style.right='1rem'; t.style.background='#111'; t.style.color='#fff'; t.style.border='1px solid rgba(255,255,255,.2)'; t.style.padding='.6rem .8rem'; t.style.borderRadius='10px'; t.style.zIndex=9999; document.body.appendChild(t);
+      setTimeout(()=> t.remove(), 1500);
+    }
+
+    // Boot
+    addBlock('f-experiences','tpl-experience');
+    addBlock('f-educations','tpl-education');
+    render();
+  </script>
 </body>
 </html>
