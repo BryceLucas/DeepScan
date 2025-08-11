@@ -13,10 +13,10 @@
   <nav>
     <ul>
       <li><a href="../../index.html">Home</a></li>
+      <li><a href="./resumebuilder.html">Resume Builder</a></li>
+      <li><a href="./faq.html" class="active">FAQ</a></li>
       <li><a href="./about-ds.html">About DeepScan</a></li>
       <li><a href="./about-us.html">About Us</a></li>
-      <li><a href="./faq.html" class="active">FAQ</a></li>
-      <li><a href="./resumebuilder.html">Resume Builder</a></li>
       <li><a href="./contact-us.html">Contact Us</a></li>
     </ul>
   </nav>
@@ -28,40 +28,61 @@
 
     <dl>
       <dt>What is DeepScan?</dt>
-      <dd>DeepScan is an AI-powered web tool that extracts, analyzes, and rewrites your résumé to make it ATS-friendly and tailored to your target role.</dd>
+      <dd>DeepScan is an AI-powered web tool that extracts, analyzes, and rewrites your Resume to make it ATS-friendly and tailored to your target role. You can also build a Resume from scratch using the Resume Builder with live preview and exports.</dd>
 
-      <dt>How do I upload my résumé?</dt>
-      <dd>Click “Choose File,” upload your résumé in a PDF or DOCX format, and then click "Upload and Extract Text." Our backend parses out all the text so you can review and then click “Rewrite Resume.”</dd>
+      <dt>How do I upload my Resume?</dt>
+      <dd>Click “Choose File,” upload your Resume in PDF or DOCX format, and then click “Upload and Extract Text.” Review the extracted text and click “Rewrite Resume.”</dd>
 
-      <dt>Can I just paste my résumé instead of uploading?</dt>
-      <dd>Yes! You can paste your résumé text directly into the text area and skip the file-upload step entirely.</dd>
+      <dt>Can I just paste my Resume instead of uploading?</dt>
+      <dd>Yes. Paste your Resume text into the textarea on the Home page and skip the file-upload step entirely.</dd>
 
       <dt>What “field of work” should I enter?</dt>
-      <dd>Enter the industry or role you’re targeting (e.g., “Software Engineering,” “Data Science”). This helps DeepScan customize phrasing and keywords for your specific field.</dd>
+      <dd>Enter the industry or role you’re targeting (e.g., “Software Engineering,” “Data Science,” “Help Desk”). This guides the rewrite toward the right keywords and phrasing.</dd>
 
       <dt>How long does it take?</dt>
-      <dd>Text extraction completes in a few seconds. The AI rewrite typically takes under 15 seconds depending on server load and résumé length.</dd>
+      <dd>Extraction typically finishes in a few seconds. The AI rewrite usually returns within 5–15 seconds depending on Resume length and server load.</dd>
 
       <dt>Is my data secure?</dt>
-      <dd>Uploaded files are stored only temporarily on our server, immediately parsed, and then deleted. We don’t keep copies of your résumé and all communication is encrypted over HTTPS.</dd>
+      <dd>Uploaded files are stored only temporarily for parsing and then deleted. Communication uses HTTPS. Resume Builder drafts saved in your browser never leave your device.</dd>
 
       <dt>Do I need an account or pay to use DeepScan?</dt>
-      <dd>No signup or payment is required for our beta. We use an open-source LLM (DeepSeek) to keep costs low and access entirely free during development.</dd>
+      <dd>No. During our beta, access is free and does not require an account.</dd>
 
       <dt>Can I revert or review changes?</dt>
-      <dd>Yes after extraction you see your original text in the textarea. The rewritten résumé appears below so you can compare before copying your final version.</dd>
+      <dd>Yes. Your original text remains in the textarea. The rewritten version appears below so you can compare, edit, and copy your final result.</dd>
 
       <dt>What if something looks wrong?</dt>
-      <dd>If the extracted text is garbled or the rewrite isn’t what you expected, please try rephrasing your “field of work” or paste your text instead. We’re continuously improving our parsing and prompts!</dd>
-     
-      <dt>Does DeepScan work for non-English résumés?</dt>
-      <dd>No, the current version of DeepScan does not enhance résumés that are not in English.</dd>
+      <dd>If extraction looks off (e.g., from an image-only PDF), try exporting your Resume as a true text PDF/DOCX or paste the text directly. You can also refine the “field of work.”</dd>
 
-      <dt>Does DeepScan assist with cover letter writing?</dt>
-      <dd>No, the current version of DeepScan does not enhance cover letters, however, it is a feature planned for the future.</dd>
+      <dt>Does DeepScan work for non-English Resumes?</dt>
+      <dd>Not yet. Current enhancement is English-only.</dd>
 
-      <dt>What is the difference from the homepage resume ai and the resume builder page?</dt>
-      <dd>The homepage version of our DeepScan ai focuses on users who have a resume and a defined career path. Resume Builder focuses more on users who don't have a resume or are less sure on their career path and direction and have prior work experience.</dd>
+      <dt>Does DeepScan assist with cover letters?</dt>
+      <dd>Not in this version. Cover-letter help is planned for the future.</dd>
+
+      <dt>What’s the difference between the Home page AI and the Resume Builder?</dt>
+      <dd>The Home page is ideal if you already have a Resume and a defined target role; it extracts and rewrites your content. The Resume Builder is ideal for creating a Resume from scratch with structured sections, live preview, and export options.</dd>
+
+      <dt>What can I do in the Resume Builder?</dt>
+      <dd>Add Experience, Education, and Projects; enter Skills as chips; edit a Professional Summary; live-preview the layout; and use actions like Save Draft, Load Draft, Export/Import JSON, and Download PDF (prints the preview pane).</dd>
+
+      <dt>How do I save and continue later?</dt>
+      <dd>Click “Save Draft” to store your data in your browser’s local storage. Later, click “Load Draft” on the same device/browser. You can also Export JSON and Import JSON to move between devices.</dd>
+
+      <dt>How do I download my Resume as a PDF?</dt>
+      <dd>Use “Download PDF” in Resume Builder. It prints only the preview area for a clean, ready-to-share PDF.</dd>
+
+      <dt>What does “Build with DeepSeek (beta)” do?</dt>
+      <dd>It sends your current builder data to the backend to enhance sections like Summary or Skills. If the backend isn’t reachable, you’ll see a notice—try again later or proceed without it.</dd>
+
+      <dt>Which file types are supported for upload?</dt>
+      <dd>PDF and DOCX for file uploads; plain text for paste-in. Image-only PDFs aren’t supported—export to text-based PDF/DOCX or paste the text.</dd>
+
+      <dt>Troubleshooting uploads & extraction</dt>
+      <dd>If uploads fail or return empty text, refresh and try again, verify the file is text-based, or paste your Resume. Persistent issues? Send us details on the Contact Us page.</dd>
+
+      <dt>Where can I send feedback or report a bug?</dt>
+      <dd>Use the Contact Us page and include steps to reproduce and any screenshots. We appreciate it!</dd>
     </dl>
   </div>
 </body>
